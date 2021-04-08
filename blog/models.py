@@ -21,7 +21,7 @@ class Blog(models.Model):
     """Model representing a blog"""
 
     title = models.CharField(max_length=200, verbose_name='Blog Title')
-    post_date = models.DateField('Posted Date')
+    post_date = models.DateTimeField('Posted Date')
     blogger = models.ForeignKey('Author', verbose_name='Author of the blog',
                                 on_delete=models.SET_NULL, null=True, blank=True)
 
@@ -53,7 +53,7 @@ class Comment(models.Model):
     blog = models.ForeignKey(
         'Blog', verbose_name="Comment's blog", on_delete=models.SET_NULL, null=True)
 
-    comment_date = models.DateField('Commented Date')
+    comment_date = models.DateTimeField('Commented Date')
 
     user = models.ForeignKey(
         User, verbose_name='Commented By', on_delete=models.SET_NULL, null=True)
