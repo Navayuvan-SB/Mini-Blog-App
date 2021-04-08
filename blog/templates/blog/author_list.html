@@ -1,0 +1,34 @@
+{% extends 'base_generic.html' %} 
+{% block title %}
+Authors 
+{% endblock title %}
+
+{% block content %}
+
+<h2>Authors</h2>
+
+{% if author_list %}
+
+<ul>
+  {% for author in author_list %}
+
+  <div class="author">
+    <a href="{% url 'author-detail' author.pk %}"><h5>{{author.name}}</h5></a>
+    <p>
+      Date of Birth:
+      <strong>
+          {{author.date_of_birth}}
+      </strong>
+    </p>
+  </div>
+
+  {% endfor %}
+</ul>
+
+{% else %}
+
+<p>
+  <i>No authors found!</i>
+</p>
+
+{% endif %} {% endblock content %}
