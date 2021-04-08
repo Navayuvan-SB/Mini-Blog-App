@@ -1,7 +1,12 @@
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponse
-from .models import Author, Blog
+from django.urls import reverse
+from .models import Author, Blog, Comment
+from django.views.generic.edit import CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+import datetime
 
 
 def index(request):
@@ -32,3 +37,28 @@ class AuthorDetailView(generic.DetailView):
 
 class BlogDetailView(generic.DetailView):
     model = Blog
+
+
+class AddCommentView(LoginRequiredMixin, CreateView):
+
+    model = Comment
+    fields = ['text']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_blog = Blog.objects.get(pk=self.kwargs['pk'])
+        context["blog"] = current_blog
+        return context
+
+    def form_valid(self, form):
+        current_date = datetime.date.today()
+        form.instance.user = self.request.user
+        form.instance.comment_date = current_date
+
+        current_blog = Blog.objects.get(pk=self.kwargs['pk'])
+        form.instance.blog = current_blog
+
+        return super(AddCommentView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('blog-detail', kwargs={'pk': self.kwargs['pk']})
