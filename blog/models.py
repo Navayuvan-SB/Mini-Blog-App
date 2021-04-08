@@ -33,3 +33,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class Blog(models.Model):
+    """Model representing a blog"""
+
+    title = models.CharField(max_length=200, verbose_name='Blog Title')
+    post_date = models.DateField('Posted Date')
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("blog-detail", kwargs={"pk": self.pk})
