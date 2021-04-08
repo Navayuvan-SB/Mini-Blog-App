@@ -3,7 +3,7 @@ from django.views import generic
 from django.http import HttpResponse
 from django.urls import reverse
 from .models import Author, Blog, Comment
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 import datetime
@@ -46,7 +46,7 @@ class AddCommentView(LoginRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        current_blog = Blog.objects.get(pk=self.kwargs['pk'])
+        current_blog = Blog.objects.get(pk=self.kwargs['blog_id'])
         context["blog"] = current_blog
         return context
 
@@ -55,10 +55,42 @@ class AddCommentView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.instance.comment_date = current_date
 
-        current_blog = Blog.objects.get(pk=self.kwargs['pk'])
+        current_blog = Blog.objects.get(pk=self.kwargs['blog_id'])
         form.instance.blog = current_blog
 
         return super(AddCommentView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('blog-detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse('blog-detail', kwargs={'pk': self.kwargs['blog_id']})
+
+
+class EditCommentView(LoginRequiredMixin, UpdateView):
+
+    model = Comment
+    fields = ['text']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_blog = Blog.objects.get(pk=self.kwargs['blog_id'])
+        context["blog"] = current_blog
+        return context
+
+    def form_valid(self, form):
+        current_date = datetime.date.today()
+        form.instance.user = self.request.user
+        form.instance.comment_date = current_date
+
+        current_blog = Blog.objects.get(pk=self.kwargs['blog_id'])
+        form.instance.blog = current_blog
+
+        return super(EditCommentView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('blog-detail', kwargs={'pk': self.kwargs['blog_id']})
+
+
+class DeleteCommentView(LoginRequiredMixin, DeleteView):
+    model = Comment
+
+    def get_success_url(self):
+        return reverse('blog-detail', kwargs={'pk': self.kwargs['blog_id']})

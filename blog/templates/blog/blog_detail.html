@@ -46,6 +46,12 @@
 
       <h6> {{comment.user.first_name}} {{comment.user.last_name}} </h6>
       <i> {{comment.comment_date}} </i>
+      {% if comment.user == request.user %}
+      &nbsp;
+      <a href="{% url 'edit-comment' blog.pk comment.pk %}">Edit</a> • 
+      <a href="{% url 'delete-comment' blog.pk comment.pk %}">Delete</a>
+        
+      {% endif %}
       <p>
         {{comment.text}}
       </p>
