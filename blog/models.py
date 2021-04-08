@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 
 class Author(models.Model):
@@ -50,9 +51,12 @@ class Comment(models.Model):
 
     text = models.TextField('Comment text')
     blog = models.ForeignKey(
-        'Blog', verbose_name="Content's blog", on_delete=models.SET_NULL, null=True)
+        'Blog', verbose_name="Comment's blog", on_delete=models.SET_NULL, null=True)
 
     comment_date = models.DateField('Commented Date')
+
+    user = models.ForeignKey(
+        User, verbose_name='Commented By', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.text
