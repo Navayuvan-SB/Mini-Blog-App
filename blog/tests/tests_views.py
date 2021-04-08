@@ -117,3 +117,31 @@ class BlogDetailViewTest(TestCase):
     def test_return_HTTP404_if_blog_not_found(self):
         response = self.client.get(reverse('blog-detail', kwargs={'pk': 2}))
         self.assertEqual(response.status_code, 404)
+
+
+class AuthorListViewTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+
+        current_date = datetime.date.today()
+        date_of_day_before = datetime.date.today() - datetime.timedelta(days=1)
+
+        number_of_author = 17
+        for author_id in range(number_of_author):
+            date_of_birth = datetime.date.today() + datetime.timedelta(days=author_id)
+            Author.objects.create(
+                name=f'James {author_id}', date_of_birth=date_of_birth)
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/blog/bloggers/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_accessible_by_name(self):
+        response = self.client.get(reverse('authors'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('authors'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/author_list.html')
