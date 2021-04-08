@@ -16,25 +16,6 @@ class Author(models.Model):
         return reverse("author-detail", kwargs={"pk": self.pk})
 
 
-class Content(models.Model):
-    """Model representing one Content of a blog"""
-
-    text = models.TextField('Content text')
-
-    def __str__(self):
-        return self.text
-
-
-class Comment(models.Model):
-    """Model representing one comment of a blog"""
-
-    text = models.TextField('Comment text')
-    comment_date = models.DateField('Commented Date')
-
-    def __str__(self):
-        return self.text
-
-
 class Blog(models.Model):
     """Model representing a blog"""
 
@@ -48,3 +29,24 @@ class Blog(models.Model):
 
     def get_absolute_url(self):
         return reverse("blog-detail", kwargs={"pk": self.pk})
+
+
+class Content(models.Model):
+    """Model representing one Content of a blog"""
+
+    text = models.TextField('Content text')
+    blog = models.ForeignKey(
+        'Blog', verbose_name="Content's blog", on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return self.text
+
+
+class Comment(models.Model):
+    """Model representing one comment of a blog"""
+
+    text = models.TextField('Comment text')
+    comment_date = models.DateField('Commented Date')
+
+    def __str__(self):
+        return self.text
