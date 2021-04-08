@@ -5,7 +5,16 @@ from .models import Author, Blog
 
 
 def index(request):
-    return HttpResponse('Index Page of Blog App')
+
+    total_number_of_blogs = Blog.objects.count()
+    total_number_of_authors = Author.objects.count()
+
+    context = {
+        'total_number_of_blogs': total_number_of_blogs,
+        'total_number_of_authors': total_number_of_authors
+    }
+
+    return render(request, 'index.html', context)
 
 
 class AuthorDetailView(generic.DetailView):
