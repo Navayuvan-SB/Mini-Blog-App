@@ -46,6 +46,9 @@ class Comment(models.Model):
     """Model representing one comment of a blog"""
 
     text = models.TextField('Comment text')
+    blog = models.ForeignKey(
+        'Blog', verbose_name="Content's blog", on_delete=models.SET_NULL, null=True)
+
     comment_date = models.DateField('Commented Date')
 
     def __str__(self):
