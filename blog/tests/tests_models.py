@@ -37,8 +37,20 @@ class ContentModelTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+
+        current_date = datetime.date.today()
+        author = Author.objects.create(
+            name='Sam Willams', bio='A Sample bio with simple description', date_of_birth='2000-06-11')
+
+        blog = Blog.objects.create(
+            title='A Sample Blog',
+            post_date=current_date,
+            blogger=author
+        )
+
         Content.objects.create(
-            text='A Sample Test with simple description'
+            text='A Sample Test with simple description',
+            blog=blog
         )
 
     def test_text_label(self):
@@ -46,6 +58,12 @@ class ContentModelTest(TestCase):
         text_label = content._meta.get_field('text').verbose_name
 
         self.assertEqual(text_label, 'Content text')
+
+    def test_blog_label(self):
+        content = Content.objects.get(id=1)
+        blog_label = content._meta.get_field('blog').verbose_name
+
+        self.assertEqual(blog_label, "Content's blog")
 
     def test_str_returns_content_text(self):
         content = Content.objects.get(id=1)
