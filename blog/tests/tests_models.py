@@ -1,5 +1,7 @@
 from django.test import TestCase
-from blog.models import Author
+from blog.models import Author, Content
+
+import datetime
 
 
 class AuthorModelTest(TestCase):
@@ -29,3 +31,22 @@ class AuthorModelTest(TestCase):
         author = Author.objects.get(id=1)
 
         self.assertEqual('/blog/author/1', author.get_absolute_url())
+
+
+class ContentModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        Content.objects.create(
+            text='A Sample Test with simple description'
+        )
+
+    def test_text_label(self):
+        content = Content.objects.get(id=1)
+        text_label = content._meta.get_field('text').verbose_name
+
+        self.assertEqual(text_label, 'Content text')
+
+    def test_str_returns_content_text(self):
+        content = Content.objects.get(id=1)
+        self.assertEqual(str(content), 'A Sample Test with simple description')
