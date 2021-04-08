@@ -1,0 +1,20 @@
+{% extends "base_generic.html" %} {% block title %} Home {% endblock %} {% block
+content %}
+<div class="row">
+  <div class="col-md-6 hero-view">
+    <h1>Mini Blog App</h1>
+    <p>
+      Welcome to the Site, a collection of
+      <em>Outstanding Blogs</em>!
+    </p>
+  </div>
+  <div class="col-md-6 content">
+    <h2>Site Summary</h2>
+    <p>The site has the following record counts:</p>
+    <ul>
+      <li><strong>Blogs</strong> {{ total_number_of_blogs }}</li>
+      <li><strong>Authors</strong> {{ total_number_of_authors }}</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}
