@@ -89,10 +89,13 @@ class BlogModelTest(TestCase):
     def setUpTestData(cls):
 
         current_date = datetime.date.today()
+        author = Author.objects.create(
+            name='Sam Willams', bio='A Sample bio with simple description', date_of_birth='2000-06-11')
 
         Blog.objects.create(
             title='A Sample Blog',
             post_date=current_date,
+            blogger=author
         )
 
     def test_title_label(self):
@@ -107,6 +110,13 @@ class BlogModelTest(TestCase):
             'post_date').verbose_name
 
         self.assertEqual(post_date_label, 'Posted Date')
+
+    def test_blogger_label(self):
+        blog = Blog.objects.get(id=1)
+        blogger_date_label = blog._meta.get_field(
+            'blogger').verbose_name
+
+        self.assertEqual(blogger_date_label, 'Author of the blog')
 
     def test_str_returns_blog_title(self):
         blog = Blog.objects.get(id=1)
