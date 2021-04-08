@@ -76,10 +76,21 @@ class CommentModelTest(TestCase):
     def setUpTestData(cls):
 
         current_date = datetime.date.today()
+        author = Author.objects.create(
+            name='Sam Willams', bio='A Sample bio with simple description', date_of_birth='2000-06-11')
+
+        blog = Blog.objects.create(
+            title='A Sample Blog',
+            post_date=current_date,
+            blogger=author
+        )
+
+        current_date = datetime.date.today()
 
         Comment.objects.create(
             text='A Sample Comment with simple description',
-            comment_date=current_date
+            comment_date=current_date,
+            blog=blog
         )
 
     def test_text_label(self):
@@ -87,6 +98,12 @@ class CommentModelTest(TestCase):
         text_label = comment._meta.get_field('text').verbose_name
 
         self.assertEqual(text_label, 'Comment text')
+
+    def test_blog_label(self):
+        comment = Comment.objects.get(id=1)
+        blog_label = comment._meta.get_field('blog').verbose_name
+
+        self.assertEqual(blog_label, "Comment's blog")
 
     def test_comment_date_label(self):
         comment = Comment.objects.get(id=1)
