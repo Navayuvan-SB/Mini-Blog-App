@@ -1,0 +1,36 @@
+{% extends 'base_generic.html' %} {% block content %}
+{% block title %}
+Blogs 
+{% endblock title %}
+
+<h2>Blogs</h2>
+
+{% if blog_list %}
+
+<ul>
+  {% for blog in blog_list %}
+
+  <div class="blog">
+    <a href="{% url 'blog-detail' blog.pk %}"><h5>{{blog.title}}</h5></a>
+    <p>
+      written by
+      <strong>
+        <a href="{% url 'author-detail' blog.blogger.pk %}">
+          {{blog.blogger.name}}
+        </a>
+      </strong>
+      |
+      <i>{{blog.post_date}} </i>
+    </p>
+  </div>
+
+  {% endfor %}
+</ul>
+
+{% else %}
+
+<p>
+  <i>No blogs found!</i>
+</p>
+
+{% endif %} {% endblock content %}
