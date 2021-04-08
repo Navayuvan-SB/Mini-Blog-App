@@ -73,3 +73,47 @@ class BlogListViewTest(TestCase):
         self.assertTrue('is_paginated' in response.context)
         self.assertTrue(response.context['is_paginated'] == True)
         self.assertTrue(len(response.context['blog_list']) == 2)
+
+
+class BlogDetailViewTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+
+        test_author = Author.objects.create(
+            name="James", date_of_birth='1998-06-11')
+
+        number_of_contents = 3
+        for content_id in range(number_of_contents):
+            Content.objects.create(text=f'Sample Text {content_id}')
+
+        all_test_contents = Content.objects.all()
+
+        current_date = datetime.date.today()
+
+        test_blog = Blog.objects.create(
+            pk=1,
+            title='A Sample Title',
+            post_date=current_date,
+            blogger=test_author
+        )
+
+        test_blog.content_set.set(all_test_contents)
+        test_blog.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/blog/1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_accessible_by_name(self):
+        response = self.client.get(reverse('blog-detail', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        response = self.client.get(reverse('blog-detail', kwargs={'pk': 1}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'blog/blog_detail.html')
+
+    def test_return_HTTP404_if_blog_not_found(self):
+        response = self.client.get(reverse('blog-detail', kwargs={'pk': 2}))
+        self.assertEqual(response.status_code, 404)
