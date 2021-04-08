@@ -1,5 +1,5 @@
 from django.test import TestCase
-from blog.models import Author, Content, Comment
+from blog.models import Author, Content, Comment, Blog
 
 import datetime
 
@@ -81,3 +81,39 @@ class CommentModelTest(TestCase):
         comment = Comment.objects.get(id=1)
         self.assertEqual(
             str(comment), 'A Sample Comment with simple description')
+
+
+class BlogModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+
+        current_date = datetime.date.today()
+
+        Blog.objects.create(
+            title='A Sample Blog',
+            post_date=current_date,
+        )
+
+    def test_title_label(self):
+        blog = Blog.objects.get(id=1)
+        title_label = blog._meta.get_field('title').verbose_name
+
+        self.assertEqual(title_label, 'Blog Title')
+
+    def test_post_date_label(self):
+        blog = Blog.objects.get(id=1)
+        post_date_label = blog._meta.get_field(
+            'post_date').verbose_name
+
+        self.assertEqual(post_date_label, 'Posted Date')
+
+    def test_str_returns_blog_title(self):
+        blog = Blog.objects.get(id=1)
+        self.assertEqual(
+            str(blog), 'A Sample Blog')
+
+    def test_get_absolute_url_returns_correct_url(self):
+        blog = Blog.objects.get(id=1)
+
+        self.assertEqual('/blog/1', blog.get_absolute_url())
