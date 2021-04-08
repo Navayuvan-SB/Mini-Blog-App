@@ -1,0 +1,30 @@
+{% extends 'base_generic.html' %} {% block title %} {{ author.name }} 
+{% endblock title %} {% block content %}
+
+<div class="blog-header">
+  <h2>{{author.name}}</h2>
+  <p>
+    Date of Birth: |
+    <i>{{author.date_of_birth}} </i>
+  </p>
+
+  <p>{{author.bio}}</p>
+</div>
+
+<div class="blog-contents">
+  {% for blog in author.blog_set.all %}
+
+  <div class="blog">
+    <a href="{% url 'blog-detail' blog.pk %}"><h5>{{blog.title}}</h5></a>
+    <p>
+      <i>{{blog.post_date}} </i>
+    </p>
+    <p>
+        {{blog.content_set.all.0.text}}
+    </p>
+  </div>
+
+  {% endfor %}
+</div>
+
+{% endblock content %}
