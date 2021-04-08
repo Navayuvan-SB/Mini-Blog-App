@@ -32,4 +32,31 @@
 
 </div>
 
+<h4>Comments</h4>
+<hr>
+
+
+
+<div class="comments">
+
+  
+  {% for comment in blog.comment_set.all %}
+    
+    <div class="comment">
+
+      <h6> {{comment.user.first_name}} {{comment.user.last_name}} </h6>
+      <i> {{comment.comment_date}} </i>
+      <p>
+        {{comment.text}}
+      </p>
+
+    </div>
+
+  {% endfor %}
+
+  
+    
+
+</div>
+
 {% endblock content %}
