@@ -14,3 +14,12 @@ class Author(models.Model):
 
     def get_absolute_url(self):
         return reverse("author-detail", kwargs={"pk": self.pk})
+
+
+class Content(models.Model):
+    """Model representing one Content of a blog"""
+
+    text = models.TextField('Content text')
+
+    def __str__(self):
+        return self.text
