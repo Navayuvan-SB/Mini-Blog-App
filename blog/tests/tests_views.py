@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-
+from django.contrib.auth.models import User
 from blog.models import Blog, Author, Content
 
 import datetime
@@ -169,3 +169,54 @@ class AuthorDetailViewTest(TestCase):
     def test_return_HTTP404_if_author_not_found(self):
         response = self.client.get(reverse('author-detail', kwargs={'pk': 2}))
         self.assertEqual(response.status_code, 404)
+
+
+class AddCommentView(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        User.objects.create_user(
+            username="testuser", password="password")
+
+        test_author = Author.objects.create(
+            name="James", date_of_birth='1998-06-11')
+
+        number_of_contents = 3
+        for content_id in range(number_of_contents):
+            Content.objects.create(text=f'Sample Text {content_id}')
+
+        all_test_contents = Content.objects.all()
+
+        current_date = datetime.date.today()
+
+        test_blog = Blog.objects.create(
+            pk=1,
+            title='A Sample Title',
+            post_date=current_date,
+            blogger=test_author
+        )
+
+        test_blog.content_set.set(all_test_contents)
+        test_blog.save()
+
+    def test_if_post_redirects_to_correct_url(self):
+        login = self.client.login(username="testuser", password="password")
+        response = self.client.post(reverse('add-comment', kwargs={'pk': 1}), {
+            'text': 'sample text'
+        })
+
+        self.assertRedirects(response, reverse(
+            'blog-detail', kwargs={'pk': 1}))
+
+    def test_submit_forbidden_on_empty_text(self):
+        login = self.client.login(username="testuser", password="password")
+        response = self.client.post(reverse('add-comment', kwargs={'pk': 1}), {
+            'text': ''
+        })
+
+        self.assertNotEqual(response.status_code, 302)
+
+    def test_url_not_accessible_if_not_logged_in(self):
+        response = self.client.get(reverse('add-comment', kwargs={"pk": 1}))
+
+        self.assertRedirects(response, '/accounts/login/?next=/blog/1/create')
