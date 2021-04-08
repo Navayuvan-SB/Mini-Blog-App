@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
 from blog.models import Author, Content, Comment, Blog
 
 import datetime
@@ -79,10 +80,13 @@ class CommentModelTest(TestCase):
         author = Author.objects.create(
             name='Sam Willams', bio='A Sample bio with simple description', date_of_birth='2000-06-11')
 
+        test_user = User.objects.create_user(
+            username="testuser", password="password")
+
         blog = Blog.objects.create(
             title='A Sample Blog',
             post_date=current_date,
-            blogger=author
+            blogger=author,
         )
 
         current_date = datetime.date.today()
@@ -90,7 +94,8 @@ class CommentModelTest(TestCase):
         Comment.objects.create(
             text='A Sample Comment with simple description',
             comment_date=current_date,
-            blog=blog
+            blog=blog,
+            user=test_user
         )
 
     def test_text_label(self):
@@ -111,6 +116,13 @@ class CommentModelTest(TestCase):
             'comment_date').verbose_name
 
         self.assertEqual(comment_date_label, 'Commented Date')
+
+    def test_comment_user_label(self):
+        comment = Comment.objects.get(id=1)
+        comment_user_label = comment._meta.get_field(
+            'user').verbose_name
+
+        self.assertEqual(comment_user_label, 'Commented By')
 
     def test_str_returns_comment_text(self):
         comment = Comment.objects.get(id=1)
