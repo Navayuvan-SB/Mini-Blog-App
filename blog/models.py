@@ -40,6 +40,8 @@ class Blog(models.Model):
 
     title = models.CharField(max_length=200, verbose_name='Blog Title')
     post_date = models.DateField('Posted Date')
+    blogger = models.ForeignKey('Author', verbose_name='Author of the blog',
+                                on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.title
