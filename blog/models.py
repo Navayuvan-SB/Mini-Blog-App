@@ -23,3 +23,13 @@ class Content(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class Comment(models.Model):
+    """Model representing one comment of a blog"""
+
+    text = models.TextField('Comment text')
+    comment_date = models.DateField('Commented Date')
+
+    def __str__(self):
+        return self.text
