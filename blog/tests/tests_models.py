@@ -1,5 +1,5 @@
 from django.test import TestCase
-from blog.models import Author, Content
+from blog.models import Author, Content, Comment
 
 import datetime
 
@@ -50,3 +50,34 @@ class ContentModelTest(TestCase):
     def test_str_returns_content_text(self):
         content = Content.objects.get(id=1)
         self.assertEqual(str(content), 'A Sample Test with simple description')
+
+
+class CommentModelTest(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+
+        current_date = datetime.date.today()
+
+        Comment.objects.create(
+            text='A Sample Comment with simple description',
+            comment_date=current_date
+        )
+
+    def test_text_label(self):
+        comment = Comment.objects.get(id=1)
+        text_label = comment._meta.get_field('text').verbose_name
+
+        self.assertEqual(text_label, 'Comment text')
+
+    def test_comment_date_label(self):
+        comment = Comment.objects.get(id=1)
+        comment_date_label = comment._meta.get_field(
+            'comment_date').verbose_name
+
+        self.assertEqual(comment_date_label, 'Commented Date')
+
+    def test_str_returns_comment_text(self):
+        comment = Comment.objects.get(id=1)
+        self.assertEqual(
+            str(comment), 'A Sample Comment with simple description')
