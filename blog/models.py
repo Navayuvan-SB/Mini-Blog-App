@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 class Author(models.Model):
@@ -21,7 +22,8 @@ class Blog(models.Model):
     """Model representing a blog"""
 
     title = models.CharField(max_length=200, verbose_name='Blog Title')
-    post_date = models.DateTimeField('Posted Date')
+    post_date = models.DateTimeField(
+        'Posted Date', auto_now_add=True)
     blogger = models.ForeignKey('Author', verbose_name='Author of the blog',
                                 on_delete=models.SET_NULL, null=True, blank=True)
 
