@@ -1,7 +1,10 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from blog.models import Author
 
 from django.urls import reverse
+
+import datetime
 
 
 class SignUpViewTest(TestCase):
@@ -34,17 +37,41 @@ class SignUpViewTest(TestCase):
         response = self.client.post(reverse('signup'), {
             'username': 'user1',
             'password1': 'testpress',
-            'password2': 'testpress'
+            'password2': 'testpress',
+            'first_name': 'Henry',
+            'last_name': 'James',
+            'date_of_birth': '1998-06-11',
+            'bio': 'A Sample Bio'
         })
 
         login = self.client.login(username='user1', password='testpress')
         self.assertTrue(login)
 
+    def test_view_creates_an_author(self):
+        response = self.client.post(reverse('signup'), {
+            'username': 'user1',
+            'password1': 'testpress',
+            'password2': 'testpress',
+            'first_name': 'Henry',
+            'last_name': 'James',
+            'date_of_birth': '1998-06-11',
+            'bio': 'A Sample Bio'
+        })
+
+        user = User.objects.get(username='user1')
+        author = Author.objects.get(name=user.get_full_name())
+
+        self.assertEqual(author.date_of_birth, datetime.date(1998, 6, 11))
+
     def test_view_redirects_to_login_after_creation_of_user(self):
         response = self.client.post(reverse('signup'), {
             'username': 'user1',
             'password1': 'testpress',
-            'password2': 'testpress'
+            'password2': 'testpress',
+            'first_name': 'Henry',
+            'last_name': 'James',
+            'date_of_birth': '1998-06-11',
+            'bio': 'A Sample Bio'
         })
 
         self.assertRedirects(response, '/accounts/login/')
