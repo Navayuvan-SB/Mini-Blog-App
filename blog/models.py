@@ -5,7 +5,6 @@ from django.utils import timezone
 
 
 class Author(models.Model):
-    """Model representing an Author"""
 
     name = models.CharField(max_length=100, verbose_name='Author Name')
     bio = models.TextField('Description about the author')
@@ -19,7 +18,6 @@ class Author(models.Model):
 
 
 class Blog(models.Model):
-    """Model representing a blog"""
 
     title = models.CharField(max_length=200, verbose_name='Blog Title')
     post_date = models.DateTimeField(
@@ -38,7 +36,6 @@ class Blog(models.Model):
 
 
 class Content(models.Model):
-    """Model representing one Content of a blog"""
 
     text = models.TextField('Content text')
     blog = models.ForeignKey(
@@ -49,7 +46,6 @@ class Content(models.Model):
 
 
 class Comment(models.Model):
-    """Model representing one comment of a blog"""
 
     text = models.TextField('Comment text')
     blog = models.ForeignKey(
