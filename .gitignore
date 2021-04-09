@@ -1,3 +1,6 @@
 # Folders
 __pycache__
 staticfiles
+
+# Files
+db.sqlite3
