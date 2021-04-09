@@ -2,9 +2,12 @@ from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponse
 from django.urls import reverse
+from django.db import transaction
 from .models import Author, Blog, Comment
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+
+from .forms import AddBlogWithContentFormSet, BlogForm, ContentForm
 
 import datetime
 
@@ -105,3 +108,35 @@ class DeleteCommentView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('blog-detail', kwargs={'pk': self.kwargs['blog_id']})
+
+
+class AddBlogView(LoginRequiredMixin, CreateView):
+
+    form_class = BlogForm
+    template_name = 'blog/blog_form.html'
+
+    def get_context_data(self, **kwargs):
+        data = super(AddBlogView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data['contents'] = AddBlogWithContentFormSet(self.request.POST)
+        else:
+            data['contents'] = AddBlogWithContentFormSet()
+
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        contents = context['contents']
+
+        author = Author.objects.get(name=self.request.user.get_full_name())
+
+        form.instance.blogger = author
+        self.object = form.save()
+        if contents.is_valid():
+            contents.instance = self.object
+            contents.save()
+
+        return super(AddBlogView, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('blogs')
