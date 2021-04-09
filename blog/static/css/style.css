@@ -10,7 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-} 
+}
 
 .sidebar-nav li a {
   margin: 0 2.3rem;
@@ -52,4 +52,117 @@
   margin: 0.6rem 0;
   display: flex;
   justify-content: space-between;
+}
+
+.pagination {
+  margin: 30px 0;
+}
+
+.pagination .page-links .wrapper,
+.pagination .page-links span {
+  margin: 0px 10px;
+}
+
+.pagination .page-links .wrapper {
+  width: 30px;
+  height: 30px;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  background-color: #585858;
+  border-radius: 50%;
+}
+
+.pagination .page-links {
+  display: flex;
+  align-items: center;
+}
+
+.pagination .page-links a {
+  color: #fff;
+  font-weight: 600;
+  line-height: 0;
+}
+
+.author {
+  margin-top: 24px;
+}
+
+.author p,
+.blog-header p,
+.blog p i,
+.blog-contents p {
+  color: #585858;
+}
+
+.blog-header {
+  margin-bottom: 30px;
+}
+
+.blog-header p {
+  margin-bottom: 5px;
+}
+
+.blog {
+  margin: 30px 0;
+}
+
+.blog h5 {
+  margin-bottom: 0;
+}
+
+.blog p i {
+  font-size: 0.85rem;
+  line-height: normal !important;
+}
+
+.blog p {
+  line-height: 2rem;
+  color: #585858;
+  margin-bottom: 0;
+}
+
+.blog-contents p {
+  line-height: 2rem;
+}
+
+.comments {
+  margin-bottom: 50px;
+}
+
+.comment {
+  margin: 20px 0;
+}
+
+.comment i,
+.comment a {
+  font-size: 0.8rem;
+}
+
+.comment h6 {
+  font-size: 1.5rem;
+}
+
+input,
+textarea {
+  outline: none;
+  background-color: rgb(243, 243, 243);
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px;
+  border: 1px solid #dadada;
+}
+
+button,
+input[type="submit"],
+input[type="button"] {
+  outline: none;
+  border: none;
+  background-color: #585858;
+  padding: 10px 25px;
+  margin: 30px 0;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
