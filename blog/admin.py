@@ -20,4 +20,4 @@ class BlogAdmin(admin.ModelAdmin):
 
 @admin.register(Author)
 class AuthorAdmin(admin.ModelAdmin):
-    list_display = ('name', 'date_of_birth')
+    list_display = ('user', 'date_of_birth')

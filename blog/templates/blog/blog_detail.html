@@ -10,7 +10,7 @@
     written by
     <strong>
       <a href="{% url 'author-detail' blog.blogger.pk %}">
-        {{blog.blogger.name}}
+        {{blog.blogger.user.get_full_name}}
       </a>
     </strong>
     |
@@ -40,11 +40,11 @@
 <div class="comments">
 
   
-  {% for comment in comments_order_by_time %}
+  {% for comment in blog.comment_set.all %}
     
     <div class="comment">
 
-      <h6> {{comment.user.first_name}} {{comment.user.last_name}} </h6>
+      <h6> {{comment.user.get_full_name}} </h6>
       <i> {{comment.comment_date}} </i>
       {% if comment.user == request.user %}
       &nbsp;

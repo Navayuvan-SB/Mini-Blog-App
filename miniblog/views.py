@@ -31,7 +31,7 @@ def sign_up_user(request):
                 username=username, password=password, first_name=first_name, last_name=last_name)
 
             new_author = Author.objects.create(
-                name=new_user.get_full_name(),
+                user=new_user,
                 date_of_birth=date_of_birth, bio=bio)
 
             new_author.save()

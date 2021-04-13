@@ -122,7 +122,7 @@ class AddBlogView(LoginRequiredMixin, CreateView):
         context = self.get_context_data()
         contents = context['contents']
 
-        author = Author.objects.get(name=self.request.user.get_full_name())
+        author = Author.objects.get(user=self.request.user)
 
         form.instance.blogger = author
         self.object = form.save()

@@ -17,7 +17,7 @@ Blogs
       written by
       <strong>
         <a href="{% url 'author-detail' blog.blogger.pk %}">
-          {{blog.blogger.name}}
+          {{blog.blogger.user.get_full_name}}
         </a>
       </strong>
       |

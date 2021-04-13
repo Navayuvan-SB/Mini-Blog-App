@@ -13,7 +13,7 @@ Authors
   {% for author in author_list %}
 
   <div class="author">
-    <a href="{% url 'author-detail' author.pk %}"><h5>{{author.name}}</h5></a>
+    <a href="{% url 'author-detail' author.pk %}"><h5>{{author.user.get_full_name}}</h5></a>
     <p>
       Date of Birth:
       <strong>
