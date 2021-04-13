@@ -10,6 +10,8 @@ class Author(models.Model):
     bio = models.TextField('Description about the author')
     date_of_birth = models.DateField()
 
+    user = models.ForeignKey(User, on_delete=models.SET_NULL)
+
     def __str__(self):
         return self.name
 
