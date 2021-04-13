@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.db import transaction
 from .models import Author, Blog, Comment
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 
 from .forms import AddBlogWithContentFormSet, BlogForm, ContentForm
 
@@ -78,10 +78,15 @@ class AddCommentView(LoginRequiredMixin, CreateView):
         return reverse('blog-detail', kwargs={'pk': self.kwargs['blog_id']})
 
 
-class EditCommentView(LoginRequiredMixin, UpdateView):
+class EditCommentView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     model = Comment
     fields = ['text']
+
+    def test_func(self):
+        id = self.kwargs['pk']
+        user_comment = Comment.objects.get(pk=id)
+        return self.request.user == user_comment.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
