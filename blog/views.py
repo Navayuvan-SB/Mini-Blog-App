@@ -41,17 +41,6 @@ class AuthorDetailView(generic.DetailView):
 class BlogDetailView(generic.DetailView):
     model = Blog
 
-    def get_context_data(self, **kwargs):
-        data = super().get_context_data(**kwargs)
-
-        blog = Blog.objects.get(pk=self.kwargs['pk'])
-
-        comments_order_by_time = blog.comment_set.order_by(
-            '-comment_date__minute')
-
-        data['comments_order_by_time'] = comments_order_by_time
-        return data
-
 
 class AddCommentView(LoginRequiredMixin, CreateView):
 
