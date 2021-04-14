@@ -5,17 +5,25 @@
 {% block content %} 
 
 <div class="blog-header">
-  <h2>{{blog.title}}</h2>
-  <p>
-    written by
-    <strong>
-      <a href="{% url 'author-detail' blog.blogger.pk %}">
-        {{blog.blogger.user.get_full_name}}
-      </a>
-    </strong>
-    |
-    <i>{{blog.post_date}} </i>
-  </p>
+  <div class="info">
+    <h2>{{blog.title}}</h2>
+    <p>
+      written by
+      <strong>
+        <a href="{% url 'author-detail' blog.blogger.pk %}">
+          {{blog.blogger.user.get_full_name}}
+        </a>
+      </strong>
+      |
+      <i>{{blog.post_date}} </i>
+    </p>
+  </div>
+  <div class="action">
+
+    <a href="" class="edit">Edit</a>
+    <a href="" class="delete">Delete</a>
+
+  </div>
 </div>
 
 <div class="blog-contents">
@@ -23,9 +31,16 @@
     
     {% for content in blog.content_set.all %}
 
-    <p>
-        {{content.text}}
-    </p>
+    <div class="content-block">
+      <p>
+          {{content.text}}
+      </p>
+      <div class="action">
+        <a href="" class="edit">Edit</a>
+        <a href="" class="delete">Delete</a>
+      </div>
+    </div>
+
 
     {% endfor %}
         
