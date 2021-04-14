@@ -1,19 +1,20 @@
-from django.forms import ModelForm
-from django.forms.models import inlineformset_factory
+from django import forms
+from django.forms import modelformset_factory
 from .models import Blog, Content
 
 
-class BlogForm(ModelForm):
+class BlogModelForm(forms.ModelForm):
     class Meta:
         model = Blog
-        fields = ['title']
+
+        fields = ("title",)
+
+        widgets = {"title": forms.TextInput(attrs={"placeholder": "A beautiful blog!"})}
 
 
-class ContentForm(ModelForm):
-    class Meta:
-        model = Content
-        fields = ['text']
-
-
-AddBlogWithContentFormSet = inlineformset_factory(
-    Blog, Content, form=ContentForm, extra=2)
+ContentFormSet = modelformset_factory(
+    Content,
+    fields=("text",),
+    extra=2,
+    widgets={"text": forms.TextInput(attrs={"placeholder": "New content goes here"})},
+)

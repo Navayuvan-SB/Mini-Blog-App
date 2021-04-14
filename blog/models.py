@@ -6,13 +6,13 @@ from django.utils import timezone
 
 class Author(models.Model):
 
-    bio = models.TextField('Description about the author')
+    bio = models.TextField("Description about the author")
     date_of_birth = models.DateField()
 
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.user.first_name
+        return self.user.get_full_name()
 
     def get_absolute_url(self):
         return reverse("author-detail", kwargs={"pk": self.pk})
@@ -20,11 +20,15 @@ class Author(models.Model):
 
 class Blog(models.Model):
 
-    title = models.CharField(max_length=200, verbose_name='Blog Title')
-    post_date = models.DateTimeField(
-        'Posted Date', auto_now_add=True)
-    blogger = models.ForeignKey('Author', verbose_name='Author of the blog',
-                                on_delete=models.SET_NULL, null=True, blank=True)
+    title = models.CharField(max_length=200, verbose_name="Blog Title")
+    post_date = models.DateTimeField("Posted Date", auto_now_add=True)
+    blogger = models.ForeignKey(
+        "Author",
+        verbose_name="Author of the blog",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+    )
 
     def __str__(self):
         return self.title
@@ -33,14 +37,15 @@ class Blog(models.Model):
         return reverse("blog-detail", kwargs={"pk": self.pk})
 
     class Meta:
-        ordering = ['-post_date']
+        ordering = ["-post_date"]
 
 
 class Content(models.Model):
 
-    text = models.TextField('Content text')
+    text = models.TextField("Content text")
     blog = models.ForeignKey(
-        'Blog', verbose_name="Content's blog", on_delete=models.SET_NULL, null=True)
+        "Blog", verbose_name="Content's blog", on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         return self.text
@@ -48,17 +53,19 @@ class Content(models.Model):
 
 class Comment(models.Model):
 
-    text = models.TextField('Comment text')
+    text = models.TextField("Comment text")
     blog = models.ForeignKey(
-        'Blog', verbose_name="Comment's blog", on_delete=models.SET_NULL, null=True)
+        "Blog", verbose_name="Comment's blog", on_delete=models.SET_NULL, null=True
+    )
 
-    comment_date = models.DateTimeField('Commented Date')
+    comment_date = models.DateTimeField("Commented Date")
 
     user = models.ForeignKey(
-        User, verbose_name='Commented By', on_delete=models.SET_NULL, null=True)
+        User, verbose_name="Commented By", on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         return self.text
 
     class Meta:
-        ordering = ['-comment_date']
+        ordering = ["-comment_date"]

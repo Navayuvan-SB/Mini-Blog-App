@@ -2,12 +2,17 @@ from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponse
 from django.urls import reverse
+from django.shortcuts import redirect
 from django.db import transaction
-from .models import Author, Blog, Comment
+from .models import Author, Blog, Comment, Content
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import (
+    LoginRequiredMixin,
+    PermissionRequiredMixin,
+    UserPassesTestMixin,
+)
 
-from .forms import AddBlogWithContentFormSet, BlogForm, ContentForm
+from .forms import BlogModelForm, ContentFormSet
 
 import datetime
 
@@ -18,11 +23,11 @@ def index(request):
     total_number_of_authors = Author.objects.count()
 
     context = {
-        'total_number_of_blogs': total_number_of_blogs,
-        'total_number_of_authors': total_number_of_authors
+        "total_number_of_blogs": total_number_of_blogs,
+        "total_number_of_authors": total_number_of_authors,
     }
 
-    return render(request, 'index.html', context)
+    return render(request, "index.html", context)
 
 
 class BlogListView(generic.ListView):
@@ -45,11 +50,11 @@ class BlogDetailView(generic.DetailView):
 class AddCommentView(LoginRequiredMixin, CreateView):
 
     model = Comment
-    fields = ['text']
+    fields = ["text"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        current_blog = Blog.objects.get(pk=self.kwargs['blog_id'])
+        current_blog = Blog.objects.get(pk=self.kwargs["blog_id"])
         context["blog"] = current_blog
         return context
 
@@ -58,28 +63,28 @@ class AddCommentView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.instance.comment_date = current_date
 
-        current_blog = Blog.objects.get(pk=self.kwargs['blog_id'])
+        current_blog = Blog.objects.get(pk=self.kwargs["blog_id"])
         form.instance.blog = current_blog
 
         return super(AddCommentView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('blog-detail', kwargs={'pk': self.kwargs['blog_id']})
+        return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})
 
 
 class EditCommentView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     model = Comment
-    fields = ['text']
+    fields = ["text"]
 
     def test_func(self):
-        id = self.kwargs['pk']
+        id = self.kwargs["pk"]
         user_comment = Comment.objects.get(pk=id)
         return self.request.user == user_comment.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        current_blog = Blog.objects.get(pk=self.kwargs['blog_id'])
+        current_blog = Blog.objects.get(pk=self.kwargs["blog_id"])
         context["blog"] = current_blog
         return context
 
@@ -88,49 +93,48 @@ class EditCommentView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         form.instance.user = self.request.user
         form.instance.comment_date = current_date
 
-        current_blog = Blog.objects.get(pk=self.kwargs['blog_id'])
+        current_blog = Blog.objects.get(pk=self.kwargs["blog_id"])
         form.instance.blog = current_blog
 
         return super(EditCommentView, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('blog-detail', kwargs={'pk': self.kwargs['blog_id']})
+        return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})
 
 
 class DeleteCommentView(LoginRequiredMixin, DeleteView):
     model = Comment
 
     def get_success_url(self):
-        return reverse('blog-detail', kwargs={'pk': self.kwargs['blog_id']})
+        return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})
 
 
-class AddBlogView(LoginRequiredMixin, CreateView):
+def create_blog_view(request):
+    template_name = "blog/blog_form.html"
 
-    form_class = BlogForm
-    template_name = 'blog/blog_form.html'
+    if request.method == "GET":
+        blog_form = BlogModelForm(request.GET or None)
+        formset = ContentFormSet(queryset=Content.objects.none())
 
-    def get_context_data(self, **kwargs):
-        data = super(AddBlogView, self).get_context_data(**kwargs)
-        if self.request.POST:
-            data['contents'] = AddBlogWithContentFormSet(self.request.POST)
-        else:
-            data['contents'] = AddBlogWithContentFormSet()
+    elif request.method == "POST":
+        blog_form = BlogModelForm(request.POST)
+        formset = ContentFormSet(request.POST)
 
-        return data
+        if blog_form.is_valid() and formset.is_valid():
 
-    def form_valid(self, form):
-        context = self.get_context_data()
-        contents = context['contents']
+            blog = blog_form.save()
 
-        author = Author.objects.get(user=self.request.user)
+            author = Author.objects.get(user=request.user)
+            blog.blogger = author
 
-        form.instance.blogger = author
-        self.object = form.save()
-        if contents.is_valid():
-            contents.instance = self.object
-            contents.save()
+            blog.save()
 
-        return super(AddBlogView, self).form_valid(form)
+            for form in formset:
 
-    def get_success_url(self):
-        return reverse('blogs')
+                content = form.save(commit=False)
+                content.blog = blog
+                content.save()
+
+            return redirect("blogs")
+
+    return render(request, template_name, {"blog_form": blog_form, "formset": formset})
