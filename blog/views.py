@@ -102,8 +102,13 @@ class EditCommentView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})
 
 
-class DeleteCommentView(LoginRequiredMixin, DeleteView):
+class DeleteCommentView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
+
+    def test_func(self):
+        id = self.kwargs["pk"]
+        user_comment = Comment.objects.get(pk=id)
+        return self.request.user == user_comment.user
 
     def get_success_url(self):
         return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})
@@ -140,33 +145,53 @@ def create_blog_view(request):
     return render(request, template_name, {"blog_form": blog_form, "formset": formset})
 
 
-class EditBlogView(generic.UpdateView):
+class EditBlogView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Blog
     template_name = "blog/blog_edit_form.html"
     fields = ("title",)
+
+    def test_func(self):
+        id = self.kwargs["pk"]
+        user_blog = Blog.objects.get(pk=id)
+        return self.request.user == user_blog.blogger.user
 
     def get_success_url(self):
         return reverse("blog-detail", kwargs={"pk": self.kwargs["pk"]})
 
 
-class DeleteBlogView(generic.DeleteView):
+class DeleteBlogView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Blog
+
+    def test_func(self):
+        id = self.kwargs["pk"]
+        user_blog = Blog.objects.get(pk=id)
+        return self.request.user == user_blog.blogger.user
 
     def get_success_url(self, **kwargs):
         return reverse("blogs")
 
 
-class EditContentView(generic.UpdateView):
+class EditContentView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = Content
     fields = ("text",)
     template_name = "blog/content_edit_form.html"
+
+    def test_func(self):
+        id = self.kwargs["blog_id"]
+        user_blog = Blog.objects.get(pk=id)
+        return self.request.user == user_blog.blogger.user
 
     def get_success_url(self):
         return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})
 
 
-class DeleteContentView(generic.DeleteView):
+class DeleteContentView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
     model = Content
+
+    def test_func(self):
+        id = self.kwargs["blog_id"]
+        user_blog = Blog.objects.get(pk=id)
+        return self.request.user == user_blog.blogger.user
 
     def get_success_url(self):
         return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})

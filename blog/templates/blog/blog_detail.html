@@ -18,12 +18,12 @@
       <i>{{blog.post_date}} </i>
     </p>
   </div>
-  <div class="action">
-
-    <a href="{% url 'edit-blog' blog.pk %}" class="edit">Edit</a>
-    <a href="{% url 'delete-blog' blog.pk %}" class="delete">Delete</a>
-
-  </div>
+  {% if request.user == blog.blogger.user %}
+    <div class="action">
+      <a href="{% url 'edit-blog' blog.pk %}" class="edit">Edit</a>
+      <a href="{% url 'delete-blog' blog.pk %}" class="delete">Delete</a>
+    </div>
+  {% endif %}
 </div>
 
 <div class="blog-contents">
@@ -35,10 +35,14 @@
       <p>
           {{content.text}}
       </p>
-      <div class="action">
-        <a href="{% url 'edit-content' blog.pk content.pk %}" class="edit">Edit</a>
-        <a href="{% url 'delete-content' blog.pk content.pk %}" class="delete">Delete</a>
-      </div>
+
+      
+      {% if request.user == blog.blogger.user %}
+        <div class="action">
+          <a href="{% url 'edit-content' blog.pk content.pk %}" class="edit">Edit</a>
+          <a href="{% url 'delete-content' blog.pk content.pk %}" class="delete">Delete</a>
+        </div>
+      {% endif %}
     </div>
 
 
