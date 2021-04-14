@@ -138,3 +138,35 @@ def create_blog_view(request):
             return redirect("blogs")
 
     return render(request, template_name, {"blog_form": blog_form, "formset": formset})
+
+
+class EditBlogView(generic.UpdateView):
+    model = Blog
+    template_name = "blog/blog_edit_form.html"
+    fields = ("title",)
+
+    def get_success_url(self):
+        return reverse("blog-detail", kwargs={"pk": self.kwargs["pk"]})
+
+
+class DeleteBlogView(generic.DeleteView):
+    model = Blog
+
+    def get_success_url(self, **kwargs):
+        return reverse("blogs")
+
+
+class EditContentView(generic.UpdateView):
+    model = Content
+    fields = ("text",)
+    template_name = "blog/content_edit_form.html"
+
+    def get_success_url(self):
+        return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})
+
+
+class DeleteContentView(generic.DeleteView):
+    model = Content
+
+    def get_success_url(self):
+        return reverse("blog-detail", kwargs={"pk": self.kwargs["blog_id"]})

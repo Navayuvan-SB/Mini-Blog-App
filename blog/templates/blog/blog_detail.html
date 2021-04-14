@@ -20,8 +20,8 @@
   </div>
   <div class="action">
 
-    <a href="" class="edit">Edit</a>
-    <a href="" class="delete">Delete</a>
+    <a href="{% url 'edit-blog' blog.pk %}" class="edit">Edit</a>
+    <a href="{% url 'delete-blog' blog.pk %}" class="delete">Delete</a>
 
   </div>
 </div>
@@ -36,8 +36,8 @@
           {{content.text}}
       </p>
       <div class="action">
-        <a href="" class="edit">Edit</a>
-        <a href="" class="delete">Delete</a>
+        <a href="{% url 'edit-content' blog.pk content.pk %}" class="edit">Edit</a>
+        <a href="{% url 'delete-content' blog.pk content.pk %}" class="delete">Delete</a>
       </div>
     </div>
 
