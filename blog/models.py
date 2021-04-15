@@ -12,7 +12,7 @@ class Author(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return self.user.get_full_name()
+        return str(self.user)
 
     def get_absolute_url(self):
         return reverse("author-detail", kwargs={"pk": self.pk})
